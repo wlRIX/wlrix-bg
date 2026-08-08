@@ -82,14 +82,7 @@ fn fill(pixels: &mut [u8], color: Color) {
 /// rectangle that starts off the top-left or runs off the bottom-right is normal -- that is what
 /// `fill` and an oversized `center` do -- so the loop runs over the *intersection* rather than
 /// over the picture.
-fn blit(
-    pixels: &mut [u8],
-    width: i32,
-    height: i32,
-    picture: &RgbaImage,
-    rect: Rect,
-    color: Color,
-) {
+fn blit(pixels: &mut [u8], width: i32, height: i32, picture: &RgbaImage, rect: Rect, color: Color) {
     let start_x = rect.x.max(0);
     let start_y = rect.y.max(0);
     let end_x = (rect.x + rect.width).min(width);

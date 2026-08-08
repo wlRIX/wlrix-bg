@@ -61,7 +61,7 @@ pub fn place(mode: Mode, source: (u32, u32), surface: (u32, u32)) -> Placement {
         Mode::Solid => Placement::Color,
         Mode::Tile => Placement::Tile,
         Mode::Stretch => Placement::Into(Rect::new(0, 0, surface_w, surface_h)),
-        Mode::Center => Placement::Into(centred(source_w, source_h, surface_w, surface_h)),
+        Mode::Center => Placement::Into(centered(source_w, source_h, surface_w, surface_h)),
         // The only difference between the two is which way the scale is rounded off: `fit` takes
         // the smaller factor and leaves bars, `fill` takes the larger and crops. Everything after
         // that -- rounding, centring -- is identical, which is why they share the code.
@@ -77,7 +77,7 @@ pub fn place(mode: Mode, source: (u32, u32), surface: (u32, u32)) -> Placement {
             // below half a pixel on one axis, and a zero-width destination is not a picture.
             let width = ((source_w as f64 * scale).round() as i32).max(1);
             let height = ((source_h as f64 * scale).round() as i32).max(1);
-            Placement::Into(centred(width, height, surface_w, surface_h))
+            Placement::Into(centered(width, height, surface_w, surface_h))
         }
     }
 }
@@ -86,7 +86,7 @@ pub fn place(mode: Mode, source: (u32, u32), surface: (u32, u32)) -> Placement {
 ///
 /// Biased so the leftover pixel of an odd difference falls on the right and the bottom, which is
 /// where a half-pixel of letterbox is least noticeable and, more usefully, is deterministic.
-fn centred(width: i32, height: i32, surface_w: i32, surface_h: i32) -> Rect {
+fn centered(width: i32, height: i32, surface_w: i32, surface_h: i32) -> Rect {
     Rect::new(
         (surface_w - width).div_euclid(2),
         (surface_h - height).div_euclid(2),

@@ -45,7 +45,7 @@ pub enum Mode {
     /// Native size, repeated from the top-left. IRIX's patterns are tiles, and it is what
     /// `swaybg -m tile` did.
     Tile,
-    /// Native size, centred, with the color around it. Cropped if it is larger than the screen.
+    /// Native size, centered, with the color around it. Cropped if it is larger than the screen.
     Center,
     /// Scaled to fit entirely, aspect kept, the color in the letterbox bars.
     Fit,
@@ -223,11 +223,7 @@ impl Config {
         // is how an override says "no picture on this monitor".
         let image = image.filter(|path| mode != Mode::Solid && !path.as_os_str().is_empty());
 
-        Wallpaper {
-            image,
-            mode,
-            color,
-        }
+        Wallpaper { image, mode, color }
     }
 
     /// Load the first config file that exists. No file at all is not an error -- the default is
@@ -346,10 +342,7 @@ mod tests {
         // Including an eight-digit one: there is nothing behind the background, so an alpha
         // channel here would be a value that cannot mean anything.
         for text in ["", "#", "#12345", "#12345678", "red", "#gggggg", "0x555555"] {
-            assert!(
-                text.parse::<Color>().is_err(),
-                "{text:?} should be refused"
-            );
+            assert!(text.parse::<Color>().is_err(), "{text:?} should be refused");
         }
     }
 
