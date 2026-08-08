@@ -28,8 +28,18 @@ zone; zero would shrink the surface when a panel appeared and leave an unpainted
 ## Settings
 
 `~/.config/wlrix/background.toml`, then `/etc/wlrix/background.toml`. The first file found wins outright and nothing is
-merged, as everywhere else in wlRIX. No file at all is a plain `#555555`
-desktop — the palette's `DESKTOP` role, the gray IRIX put under everything.
+merged, as everywhere else in wlRIX.
+
+`just install` writes the second of those from [`data/background.toml.in`](data/background.toml.in) — the **IRIX
+scatter**, tiled. That is a two-color dither, 100×100, seamless; `mode = "tile"` rather than the built-in `fill`
+because scaling a 100-pixel dither to a screen turns the pattern into mush. The picture itself comes from
+`wlrix-assets`, which installs it to `$prefix/share/wlrix/wallpapers/`; the config names it by absolute path, so the
+template carries `@WALLPAPERDIR@` and the justfile substitutes the real prefix at install time.
+
+An existing `/etc/wlrix/background.toml` is **never overwritten** by a reinstall — /etc belongs to whoever installed the
+machine. And if `wlrix-assets` is not installed, the path simply does not resolve: `wlrix-bg` says so on stderr and
+falls back to the color, a plain `#555555` desktop — the palette's `DESKTOP` role, the gray IRIX put under everything.
+With no config file anywhere at all, that gray is also what you get.
 
 ```toml
 image = "/home/you/Pictures/scatter.png"   # absent: the color alone

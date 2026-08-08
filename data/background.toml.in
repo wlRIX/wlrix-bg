@@ -1,0 +1,26 @@
+# The wlRIX desktop background.
+#
+# This is the system default, installed to /etc/wlrix/background.toml. Your own
+# ~/.config/wlrix/background.toml replaces it **outright** -- wlRIX takes the first config file
+# it finds and does not merge -- so copy this file rather than starting an empty one, or use a
+# settings panel, which seeds your file from this one on its first write.
+#
+#   image = "/path/to/picture.png"   # absent, or "", is the color alone
+#   mode  = "fill"                   # tile | center | fit | fill | stretch | solid
+#   color = "#555555"                # letterbox bars, and the whole screen under solid
+#
+# Per-monitor overrides go in [[output]] sections keyed by connector name (DP-1, HDMI-A-1, ...),
+# each field falling back to the top-level one. `wlrix-bg --help` and the README have the rest.
+
+# The IRIX scatter: a two-color dither, 100x100, tiling seamlessly -- which is what it is for,
+# and why the mode below is `tile` rather than the built-in default of `fill`. Stretching a
+# 100-pixel dither across a 4K screen would turn the pattern into mush.
+#
+# Installed by wlrix-assets. If that is not installed, this path does not exist, and wlrix-bg
+# says so on stderr and falls back to the color below -- a plain gray desktop, not a failure.
+image = "@WALLPAPERDIR@/scatter.png"
+mode = "tile"
+
+# Seen only if the picture above goes missing, since a tile leaves nothing uncovered. #555555 is
+# the palette's DESKTOP role, the gray IRIX put under everything.
+color = "#555555"

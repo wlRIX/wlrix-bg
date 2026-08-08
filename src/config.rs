@@ -297,6 +297,42 @@ mod tests {
     }
 
     #[test]
+    fn the_installed_default_config_is_one_this_program_accepts() {
+        // `data/background.toml.in` is what `just install` writes to /etc/wlrix/background.toml,
+        // and it is the whole of what a fresh machine's desktop looks like. It goes through the
+        // same parser as anything else -- `deny_unknown_fields` and all -- so a typo in it would
+        // cost every user on that machine their default background silently, at which point they
+        // get built-in defaults and a plain gray screen with no clue why.
+        //
+        // Read at test time rather than `include_str!`d, so the template is checked as a file on
+        // disk rather than as something the compiler happened to inline.
+        let template = std::fs::read_to_string(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("data/background.toml.in"),
+        )
+        .expect("data/background.toml.in should be readable");
+
+        // The one substitution `just install` makes. Anything else left in it is a token the
+        // justfile does not know to replace, which would land in /etc verbatim.
+        let installed = template.replace("@WALLPAPERDIR@", "/usr/share/wlrix/wallpapers");
+        assert!(
+            !installed.contains('@'),
+            "an unsubstituted @TOKEN@ is left in background.toml.in"
+        );
+
+        let config: Config = toml::from_str(&installed).expect("the installed default must parse");
+        let wallpaper = config.resolve(None);
+        assert_eq!(
+            wallpaper.image.as_deref(),
+            Some(Path::new("/usr/share/wlrix/wallpapers/scatter.png")),
+            "the default should be the IRIX scatter, installed by wlrix-assets"
+        );
+        // Tile, not the built-in `fill`: the scatter is a 100x100 seamless dither, and scaling it
+        // to a screen would turn the pattern into mush.
+        assert_eq!(wallpaper.mode, Mode::Tile);
+        assert_eq!(wallpaper.color, DEFAULT_COLOR);
+    }
+
+    #[test]
     fn every_mode_a_user_can_type_parses() {
         for (text, mode) in [
             ("tile", Mode::Tile),
