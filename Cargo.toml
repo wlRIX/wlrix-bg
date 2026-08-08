@@ -1,0 +1,56 @@
+[package]
+name = "wlrix-bg"
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-or-later"
+description = "wlRIX desktop background — the wallpaper, on the background layer, with the formats IRIX shipped."
+repository = "https://github.com/wlrix/wlrix-bg"
+publish = false
+
+[dependencies]
+# The Wayland client. `wlrix-bg` is one wlr-layer-shell **background** surface per output, drawn
+# into a plain shm buffer -- the same shape as `wlrix-desktop`, whose `ui` module this follows,
+# one layer further down.
+smithay-client-toolkit = "0.19"
+wayland-client = "0.31"
+# The event loop. The Wayland connection and the `SIGHUP` reload ping are both sources on one
+# loop, so nothing polls and nothing is done from signal context.
+calloop = "0.13"
+# The config file. TOML is wlRIX's config format throughout.
+serde = { version = "1", features = ["derive"] }
+toml = "1"
+# `kill`/`signal` for the reload, and `O_NOFOLLOW` for the pidfile. The arrangement is
+# `wlrix-desktop`'s and `wlrix-compositor`'s, unchanged.
+libc = "0.2"
+
+# Decoding wallpapers. `default-features = false` because the defaults pull in every format the
+# crate knows -- AVIF, EXR, HDR, DDS, farbfeld -- and a wallpaper is not an HDR pipeline. What is
+# left is what people actually have pictures in.
+image = { version = "0.25.8", default-features = false, features = [
+    "png",
+    "jpeg",
+    "gif",
+    "bmp",
+    "tiff",
+    "webp",
+] }
+# The formats IRIX and X11 shipped artwork in, which the `image` crate proper does not carry.
+# Registered once at startup (see `src/decode.rs`), after which they come back through
+# `image`'s own reader like any other format.
+#
+# `default-features = false` again, and for a sharper reason than above: the defaults add DDS,
+# ICNS, ORA, OTB and WBMP -- GPU textures, Apple icons and phone bitmaps, none of which anyone
+# has a wallpaper in. Every decoder enabled here is one more parser reading an untrusted file,
+# and this crate's own README says its decoders "may panic or worse on malformed input". So:
+# only what is wanted.
+#
+#   sgi  -- `.rgb`, `.rgba`, `.bgr`, `.sgi`. IRIX's own format; the reason this crate is here.
+#   xpm  -- X PixMap, which is what the 4Dwm-era patterns are.
+#   xbm  -- X Bitmap, its two-color sibling.
+#   pcx  -- not IRIX, but of the same era and half a page of code to support.
+image-extras = { version = "0.1", default-features = false, features = [
+    "sgi",
+    "xpm",
+    "xbm",
+    "pcx",
+] }
