@@ -53,14 +53,14 @@ image = "/home/you/Pictures/yaeka.png"
 mode = "fit"
 ```
 
-| `mode`    |                                                                           |
-|-----------|---------------------------------------------------------------------------|
-| `tile`    | Native size, repeated from the top-left. IRIX's patterns are tiles.       |
-| `center`  | Native size, centred, color around it; cropped if larger than the screen. |
-| `fit`     | Scaled to fit entirely, aspect kept, color in the letterbox bars.         |
-| `fill`    | Scaled to cover, aspect kept, overflow cropped evenly. **The default.**   |
-| `stretch` | Scaled to the screen exactly, aspect discarded.                           |
-| `solid`   | The color alone. The picture is not even opened.                          |
+| `mode`    |                                                                            |
+|-----------|----------------------------------------------------------------------------|
+| `tile`    | Native size, repeated from the top-left. IRIX's patterns are tiles.        |
+| `center`  | Native size, centered, color around it; cropped if larger than the screen. |
+| `fit`     | Scaled to fit entirely, aspect kept, color in the letterbox bars.          |
+| `fill`    | Scaled to cover, aspect kept, overflow cropped evenly. **The default.**    |
+| `stretch` | Scaled to the screen exactly, aspect discarded.                            |
+| `solid`   | The color alone. The picture is not even opened.                           |
 
 `color` is `#rrggbb` or the shorthand `#rgb`. It is what shows in the bars, through anything transparent in the picture,
 and over the whole screen when there is no picture. There is no alpha:

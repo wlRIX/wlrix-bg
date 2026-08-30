@@ -126,7 +126,7 @@ mod tests {
     }
 
     #[test]
-    fn center_keeps_the_native_size_and_centres_it() {
+    fn center_keeps_the_native_size_and_centers_it() {
         assert_eq!(
             place(Mode::Center, PICTURE, SCREEN),
             Placement::Into(Rect::new(560, 240, 800, 600))

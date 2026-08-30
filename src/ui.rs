@@ -343,7 +343,7 @@ impl CompositorHandler for Background {
         surface: &WlSurface,
         new: i32,
     ) {
-        // The buffer is allocated at the output's scale, so this has to be honoured or a HiDPI
+        // The buffer is allocated at the output's scale, so this has to be honored or a HiDPI
         // screen gets a wallpaper at a quarter of its resolution.
         let Some(screen) = self
             .screens
