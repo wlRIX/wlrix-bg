@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install system dependencies
+        # smithay-client-toolkit's keyboard support links the system xkbcommon, so its
+        # build script needs xkbcommon.pc (from libxkbcommon-dev) via pkg-config. This
+        # component never reads a key, but it takes the toolkit's default features, so the
+        # dependency is in the tree all the same.
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            pkg-config \
+            libxkbcommon-dev
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Format
+        run: cargo fmt --all --check
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+      - name: Build
+        run: cargo build --verbose
+      # The tests are the config parser, the geometry and the decoders, none of which needs a
+      # compositor: the wallpaper formats are decoded from bytes built in the test itself.
+      - name: Test
+        run: cargo test --verbose

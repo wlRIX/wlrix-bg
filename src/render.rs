@@ -71,8 +71,8 @@ pub fn render(
 /// Paint every pixel one color.
 fn fill(pixels: &mut [u8], color: Color) {
     let bytes = color.pixel().to_ne_bytes();
-    for pixel in pixels.chunks_exact_mut(4) {
-        pixel.copy_from_slice(&bytes);
+    for pixel in pixels.as_chunks_mut::<4>().0 {
+        *pixel = bytes;
     }
 }
 
@@ -110,8 +110,8 @@ fn tile(pixels: &mut [u8], width: i32, height: i32, picture: &RgbaImage, color: 
     if tile_w == 1 && tile_h == 1 {
         let single = over(picture.get_pixel(0, 0).0, color);
         let bytes = single.to_ne_bytes();
-        for pixel in pixels.chunks_exact_mut(4) {
-            pixel.copy_from_slice(&bytes);
+        for pixel in pixels.as_chunks_mut::<4>().0 {
+            *pixel = bytes;
         }
         return;
     }
